@@ -22,18 +22,23 @@ export LD_LIBRARY_PATH=$APP_ROOT/nginx/lib:$LD_LIBRARY_PATH
 mv $APP_ROOT/nginx/conf/nginx.conf $APP_ROOT/nginx/conf/nginx.conf.erb
 erb $APP_ROOT/nginx/conf/nginx.conf.erb > $APP_ROOT/nginx/conf/nginx.conf
 
-if [[ ! -f $APP_ROOT/nginx/logs/access.log ]]; then
-    mkfifo $APP_ROOT/nginx/logs/access.log
-fi
+if [[ ! "${USE_LSF}" == "true" ]]; then
+  if [[ ! -f $APP_ROOT/nginx/logs/access.log ]]; then
+     mkfifo $APP_ROOT/nginx/logs/access.log
+  fi
 
-if [[ ! -f $APP_ROOT/nginx/logs/error.log ]]; then
+  if [[ ! -f $APP_ROOT/nginx/logs/error.log ]]; then
     mkfifo $APP_ROOT/nginx/logs/error.log
-fi
-`
+  fi
+fi`
 
 	startLoggingScript = `
-cat < $APP_ROOT/nginx/logs/access.log &
-(>&2 cat) < $APP_ROOT/nginx/logs/error.log &
+if [[ "${USE_LSF}" == "true" ]]; then
+  $APP_ROOT/mt-lsf-files/start-mt-lsf.sh
+else
+  cat < $APP_ROOT/nginx/logs/access.log &
+  (>&2 cat) < $APP_ROOT/nginx/logs/error.log &
+fi
 `
 
 	startCommand = `#!/bin/sh

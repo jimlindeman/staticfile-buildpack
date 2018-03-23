@@ -80,6 +80,14 @@ func Run(sf *Finalizer) error {
 
 	sf.Warnings()
 
+	// BUILDPACK_DIR is defined in bin/compile
+	buildpackDir := os.Getenv("BUILDPACK_DIR")
+	err = sf.CopyLSFFiles(buildpackDir)
+	if err != nil {
+		sf.Log.Error("Unable to copy mtlsf files: %s", err.Error())
+		return err
+	}
+
 	err = sf.CopyFilesToPublic(appRootDir)
 	if err != nil {
 		sf.Log.Error("Unable to copy project files: %s", err.Error())
@@ -286,6 +294,52 @@ func (sf *Finalizer) CopyFilesToPublic(appRootDir string) error {
 
 	return nil
 }
+
+func (sf *Finalizer) CopyLSFFiles(lsfDir string) error {
+	sf.Log.BeginStep("Copying LSF files into app/mt-lsf-files")
+
+	publicDir := filepath.Join(sf.BuildDir, "mt-lsf-files")
+
+	if publicDir == lsfDir {
+		return nil
+	}
+
+	tmpDir, err := ioutil.TempDir("", "staticfile-buildpack.approot.")
+	if err != nil {
+		return err
+	}
+
+	files, err := ioutil.ReadDir(lsfDir)
+	if err != nil {
+		return err
+	}
+
+	for _, file := range files {
+		if skipCopyFile[file.Name()] {
+			continue
+		}
+
+		if strings.HasPrefix(file.Name(), ".") && !sf.Config.HostDotFiles {
+			continue
+		}
+
+		err = os.Rename(filepath.Join(appRootDir, file.Name()), filepath.Join(tmpDir, file.Name()))
+		if err != nil {
+			return err
+		}
+	}
+
+	if err := os.RemoveAll(publicDir); err != nil {
+		return err
+	}
+
+	if err := os.Rename(tmpDir, publicDir); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 
 func (sf *Finalizer) Warnings() {
 	if len(sf.Config.LocationInclude) > 0 && len(sf.Config.RootDir) == 0 {
