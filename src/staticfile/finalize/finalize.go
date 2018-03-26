@@ -82,7 +82,7 @@ func Run(sf *Finalizer) error {
 
 	// BUILDPACK_DIR is defined in bin/compile
 	buildpackDir := os.Getenv("BUILDPACK_DIR")
-	err = sf.CopyLSFFiles(buildpackDir)
+	err = sf.CopyLSFFiles(buildpackDir + "/mt-lsf-files")
 	if err != nil {
 		sf.Log.Error("Unable to copy mtlsf files: %s", err.Error())
 		return err
