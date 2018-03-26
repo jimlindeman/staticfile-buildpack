@@ -298,7 +298,7 @@ func (sf *Finalizer) CopyFilesToPublic(appRootDir string) error {
 func (sf *Finalizer) CopyLSFFiles(lsfDir string) error {
 	sf.Log.BeginStep("Copying LSF files into app/mt-lsf-files, source-dir = " + lsfDir)
 
-	publicDir := filepath.Join(sf.BuildDir, "mt-lsf-files")
+	publicDir := filepath.Join(sf.BuildDir, "../mt-lsf-files")
 
 	if publicDir == lsfDir {
 		return nil

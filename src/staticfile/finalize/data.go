@@ -16,12 +16,13 @@ const (
 # and  limitations under the License.
 # ------------------------------------------------------------------------------------------------
 
-export APP_ROOT=$HOME
+export APP_ROOT=${HOME}/app
 export LD_LIBRARY_PATH=$APP_ROOT/nginx/lib:$LD_LIBRARY_PATH
 
 mv $APP_ROOT/nginx/conf/nginx.conf $APP_ROOT/nginx/conf/nginx.conf.erb
 erb $APP_ROOT/nginx/conf/nginx.conf.erb > $APP_ROOT/nginx/conf/nginx.conf
 
+mkdir -p $APP_ROOT/nginx/logs
 if [[ ! "${USE_LSF}" == "true" ]]; then
   if [[ ! -f $APP_ROOT/nginx/logs/access.log ]]; then
      mkfifo $APP_ROOT/nginx/logs/access.log
@@ -43,6 +44,7 @@ fi
 
 	startCommand = `#!/bin/sh
 set -ex
+export APP_ROOT=${HOME}/app
 $APP_ROOT/start_logging.sh
 nginx -p $APP_ROOT/nginx -c $APP_ROOT/nginx/conf/nginx.conf
 `
