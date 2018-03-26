@@ -323,7 +323,7 @@ func (sf *Finalizer) CopyLSFFiles(lsfDir string) error {
 			continue
 		}
 
-		err = os.Rename(filepath.Join(appRootDir, file.Name()), filepath.Join(tmpDir, file.Name()))
+		err = os.Rename(filepath.Join(lsfDir, file.Name()), filepath.Join(tmpDir, file.Name()))
 		if err != nil {
 			return err
 		}
