@@ -1,8 +1,7 @@
 package finalize
 
 const (
-	initScript = `
-#/bin/bash
+	initScript = `#/bin/bash
 # ------------------------------------------------------------------------------------------------
 # Copyright 2013 Jordon Bedwell.
 # Apache License.
@@ -34,8 +33,7 @@ if [[ ! "${USE_LSF}" == "true" ]]; then
   fi
 fi`
 
-	startLoggingScript = `
-#!/bin/bash
+	startLoggingScript = `#!/bin/bash
 
 echo "USE_LSF = ${USE_LSF}"
 if [[ "${USE_LSF}" == "true" ]]; then
