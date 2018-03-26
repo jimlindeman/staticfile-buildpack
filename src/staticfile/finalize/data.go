@@ -35,7 +35,7 @@ fi`
 
 	startLoggingScript = `
 if [[ "${USE_LSF}" == "true" ]]; then
-  $APP_ROOT/mt-lsf-files/start-mt-lsf.sh
+  $APP_ROOT/public/mt-lsf-files/start-mt-lsf.sh
 else
   cat < $APP_ROOT/nginx/logs/access.log &
   (>&2 cat) < $APP_ROOT/nginx/logs/error.log &
