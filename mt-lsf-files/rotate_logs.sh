@@ -6,12 +6,12 @@
 ROTATION_CHECK_PERIOD=600  # 10 minutes
 
 function log() {
-  echo "$(date -u '+%Y-%m-%d %T,000') INFO $1" >>/home/vcap/${GIT_APP_NAME}-rotate.log
+  echo "$(date -u '+%Y-%m-%d %T,000') INFO $1" >>/home/vcap/${CF_APP_NAME}-rotate.log
 }
 
 echo "Generating logrotate configuration"
-cat >/home/vcap/${GIT_APP_NAME}-rotate.conf <<EOF
-/home/vcap/${GIT_APP_NAME}-rotate.log {
+cat >/home/vcap/${CF_APP_NAME}-rotate.conf <<EOF
+/home/vcap/${CF_APP_NAME}-rotate.log {
   size 1M
   rotate 0
 }
@@ -35,6 +35,6 @@ while [ true ]; do
   log "Sleeping for $ROTATION_CHECK_PERIOD seconds before next log rotation check."
   sleep $ROTATION_CHECK_PERIOD
   log "Rotate logs if needed with logrotate"
-  log_rotate_output=`/home/vcap/logrotate --verbose -s /home/vcap/rotate-statusfile /home/vcap/${GIT_APP_NAME}-rotate.conf 2>&1`
-  echo "$log_rotate_output" >>/home/vcap/${GIT_APP_NAME}-rotate.log
+  log_rotate_output=`/home/vcap/logrotate --verbose -s /home/vcap/rotate-statusfile /home/vcap/${CF_APP_NAME}-rotate.conf 2>&1`
+  echo "$log_rotate_output" >>/home/vcap/${CF_APP_NAME}-rotate.log
 done
